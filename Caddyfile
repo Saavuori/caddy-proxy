@@ -1,0 +1,43 @@
+{
+    email your-email@example.com
+}
+
+# Global Basic Auth configuration helper
+(basic-auth-auth) {
+    basic_auth {
+        # Username: admin
+        # Replace the placeholder below with your generated bcrypt hash.
+        # Generate hash with: docker run --rm caddy caddy hash-password --plaintext <your-password>
+        admin YOUR_GENERATED_BCRYPT_HASH_HERE
+    }
+}
+
+your-ddns-domain.tplinkdns.com {
+    import basic-auth-auth
+
+    # 1. Enforce trailing slashes for clean relative asset loading
+    redir /helendatacollector /helendatacollector/
+    redir /ruuvigateway /ruuvigateway/
+    redir /otherapp /otherapp/
+
+    # 2. Reverse proxy handlers with prefix stripping
+    handle_path /helendatacollector* {
+        reverse_proxy helen-collector:3000
+    }
+
+    handle_path /ruuvigateway* {
+        reverse_proxy host.docker.internal:8080
+    }
+
+    # Placeholder for the third app
+    # handle_path /otherapp* {
+    #     reverse_proxy other-container:port
+    # }
+
+    # 3. Fallback Root page
+    handle {
+        respond "Welcome to the Pi Portal! Services: <a href='/helendatacollector/'>Helen Flow</a>, <a href='/ruuvigateway/'>Ruuvi Gateway</a>" 200 {
+            header Content-Type "text/html; charset=utf-8"
+        }
+    }
+}

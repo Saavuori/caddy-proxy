@@ -1,0 +1,39 @@
+services:
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy-proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web-proxy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      - "com.centurylinklabs.watchtower.scope=proxy"
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower-proxy
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=300
+      - WATCHTOWER_SCOPE=proxy
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_LOG_LEVEL=info
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  web-proxy:
+    external: true
