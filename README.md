@@ -18,17 +18,23 @@ Features:
 
 ---
 
-## Configuration
+## Installation
 
-To deploy the proxy, follow these setup steps:
+Run this single command on your Raspberry Pi to download the installer, set up the directory, and configure the shared Docker network:
 
-### 1. Create the Shared Network
-Before starting the proxy, create the shared external bridge network on your Raspberry Pi:
 ```bash
-docker network create web-proxy
+curl -fsSL https://raw.githubusercontent.com/Saavuori/caddy-proxy/main/install.sh | bash
 ```
 
-### 2. Configure the Caddyfile
+This will install Caddy proxy files into a `./caddy-proxy` directory and create the `web-proxy` external Docker network automatically.
+
+---
+
+## Configuration
+
+To finish deployment, configure the proxy settings:
+
+### 1. Configure the Caddyfile
 Open `Caddyfile` and configure your settings:
 
 1. **Email Address**: Replace `your-email@example.com` with your email to receive Let's Encrypt certificate notifications.
