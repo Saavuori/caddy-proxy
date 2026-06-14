@@ -29,6 +29,7 @@ services:
       - WATCHTOWER_SCOPE=proxy
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_LOG_LEVEL=info
+      - DOCKER_API_VERSION=1.45
 
 volumes:
   caddy_data:

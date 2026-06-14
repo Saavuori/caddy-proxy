@@ -36,8 +36,7 @@ your-ddns-domain.tplinkdns.com {
 
     # 3. Fallback Root page
     handle {
-        respond "Welcome to the Pi Portal! Services: <a href='/helendatacollector/'>Helen Flow</a>, <a href='/ruuvigateway/'>Ruuvi Gateway</a>" 200 {
-            header Content-Type "text/html; charset=utf-8"
-        }
+        header Content-Type "text/html; charset=utf-8"
+        respond "Welcome to the Pi Portal! Services: <a href='/helendatacollector/'>Helen Flow</a>, <a href='/ruuvigateway/'>Ruuvi Gateway</a>" 200
     }
 }
