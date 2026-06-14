@@ -16,6 +16,9 @@ curl -fsSL "${BASE_URL}/docker-compose.yml" -o docker-compose.yml
 echo "==> Downloading Caddyfile template..."
 curl -fsSL "${BASE_URL}/Caddyfile.example" -o Caddyfile.example
 
+echo "==> Downloading index.html portal page..."
+curl -fsSL "${BASE_URL}/index.html" -o index.html
+
 if [ ! -f Caddyfile ]; then
   echo "==> Creating Caddyfile from template..."
   cp Caddyfile.example Caddyfile
