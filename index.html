@@ -149,6 +149,9 @@
         .card.ruuvi:hover {
             box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
         }
+        .card.fingrid:hover {
+            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
+        }
         .card-icon {
             width: 3.5rem;
             height: 3.5rem;
@@ -166,6 +169,10 @@
         }
         .ruuvi .card-icon {
             background: linear-gradient(135deg, #10b981, #047857);
+            color: #ffffff;
+        }
+        .fingrid .card-icon {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
             color: #ffffff;
         }
         .card-meta {
@@ -191,6 +198,21 @@
             background-color: rgba(16, 185, 129, 0.15);
             color: #6ee7b7;
             border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .fingrid .status-badge {
+            background-color: rgba(6, 182, 212, 0.15);
+            color: #67e8f9;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        /* Offline status badge state */
+        .status-badge.offline {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+            color: #fca5a5 !important;
+            border: 1px solid rgba(239, 68, 68, 0.2) !important;
+        }
+        .status-badge.offline .status-dot {
+            background-color: #ef4444 !important;
+            animation: none !important;
         }
         .status-dot {
             width: 0.5rem;
@@ -251,6 +273,17 @@
             color: #ffffff;
             border-color: #10b981;
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .fingrid .card-button {
+            background: rgba(6, 182, 212, 0.1);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        .fingrid .card-button:hover {
+            background: #06b6d4;
+            color: #ffffff;
+            border-color: #06b6d4;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
         }
         footer {
             text-align: center;
@@ -324,6 +357,24 @@
                     Launch Service <span>&rarr;</span>
                 </a>
             </div>
+            <div class="card fingrid">
+                <div class="card-meta">
+                    <div class="card-icon">📊</div>
+                    <span class="status-badge">
+                        <span class="status-dot"></span> Fingrid Flow
+                    </span>
+                </div>
+                <div>
+                    <h2 class="card-title">FingridFlow</h2>
+                    <p style="font-size: 0.8rem; color: #22d3ee; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grid Data Collector</p>
+                </div>
+                <p class="card-description">
+                    Retrieves, browses, and exports grid metrics from the Fingrid Open Data API (frequency, wind, solar, nuclear, etc.) to InfluxDB. Features interactive live-preview charts.
+                </p>
+                <a href="/fingridflow/" class="card-button">
+                    Launch Service <span>&rarr;</span>
+                </a>
+            </div>
         </div>
         <footer>
             <div class="info-pill-container">
@@ -337,11 +388,107 @@
     <script>
         function updateTime() {
             const timeSpan = document.getElementById('local-time');
-            const now = new Date();
-            timeSpan.innerText = "Local Time: " + now.toLocaleTimeString();
+            if (timeSpan) {
+                const now = new Date();
+                timeSpan.innerText = "Local Time: " + now.toLocaleTimeString();
+            }
         }
         setInterval(updateTime, 1000);
         updateTime();
+
+        // Autodiscovery & Status Probing
+        const services = [
+            {
+                path: '/helendatacollector/',
+                cardSelector: '.card.helen',
+                badgeSelector: '.card.helen .status-badge'
+            },
+            {
+                path: '/ruuvigateway/',
+                cardSelector: '.card.ruuvi',
+                badgeSelector: '.card.ruuvi .status-badge'
+            },
+            {
+                path: '/fingridflow/',
+                cardSelector: '.card.fingrid',
+                badgeSelector: '.card.fingrid .status-badge'
+            }
+        ];
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const isMockMode = urlParams.has('mock');
+
+        async function probeService(service) {
+            const cardEl = document.querySelector(service.cardSelector);
+            const badgeEl = document.querySelector(service.badgeSelector);
+            if (!cardEl) return;
+
+            try {
+                let statusVal = 200;
+                if (isMockMode) {
+                    if (service.path.includes('/helendatacollector/')) {
+                        statusVal = 502; // Simulate offline for Helen
+                    } else {
+                        statusVal = 200; // Simulate online for Ruuvi and Fingrid
+                    }
+                } else {
+                    // Fetch path GET with cache buster
+                    const response = await fetch(service.path + '?t=' + Date.now(), {
+                        method: 'GET',
+                        cache: 'no-store'
+                    });
+                    statusVal = response.status;
+                }
+
+                if (statusVal === 404) {
+                    // Not configured in Caddy -> Hide option
+                    cardEl.style.display = 'none';
+                } else if (statusVal >= 500) {
+                    // Configured but backend container is down (Bad Gateway / Service Unavailable)
+                    cardEl.style.display = '';
+                    updateStatusBadge(badgeEl, false);
+                } else {
+                    // Connected successfully (2xx, 3xx, or 401 Basic Auth required)
+                    cardEl.style.display = '';
+                    updateStatusBadge(badgeEl, true);
+                }
+            } catch (error) {
+                // If there's a network error (e.g. DNS or connection issue), mark as offline
+                cardEl.style.display = '';
+                updateStatusBadge(badgeEl, false);
+            }
+        }
+
+        function updateStatusBadge(badgeEl, isOnline) {
+            if (!badgeEl) return;
+
+            if (isOnline) {
+                badgeEl.classList.remove('offline');
+            } else {
+                badgeEl.classList.add('offline');
+            }
+
+            // Extract or cache the original label
+            let label = badgeEl.getAttribute('data-label');
+            if (!label) {
+                const textNode = Array.from(badgeEl.childNodes).find(
+                    node => node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== ''
+                );
+                label = textNode ? textNode.textContent.trim() : '';
+                badgeEl.setAttribute('data-label', label);
+            }
+
+            // Update text node content
+            const textNode = Array.from(badgeEl.childNodes).find(
+                node => node.nodeType === Node.TEXT_NODE
+            );
+            if (textNode) {
+                textNode.textContent = ' ' + label + (isOnline ? '' : ' (Offline)');
+            }
+        }
+
+        // Initialize autodiscovery checks
+        services.forEach(probeService);
     </script>
 </body>
 </html>
