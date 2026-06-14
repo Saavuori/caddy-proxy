@@ -15,21 +15,6 @@ services:
       - web-proxy
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    labels:
-      - "com.centurylinklabs.watchtower.scope=proxy"
-
-  watchtower:
-    image: containrrr/watchtower
-    container_name: watchtower-proxy
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - WATCHTOWER_POLL_INTERVAL=300
-      - WATCHTOWER_SCOPE=proxy
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_LOG_LEVEL=info
-      - DOCKER_API_VERSION=1.45
 
 volumes:
   caddy_data:
