@@ -13,8 +13,15 @@ cd "$INSTALL_DIR"
 echo "==> Downloading docker-compose.yml..."
 curl -fsSL "${BASE_URL}/docker-compose.yml" -o docker-compose.yml
 
-echo "==> Downloading Caddyfile..."
-curl -fsSL "${BASE_URL}/Caddyfile" -o Caddyfile
+echo "==> Downloading Caddyfile template..."
+curl -fsSL "${BASE_URL}/Caddyfile.example" -o Caddyfile.example
+
+if [ ! -f Caddyfile ]; then
+  echo "==> Creating Caddyfile from template..."
+  cp Caddyfile.example Caddyfile
+else
+  echo "==> Caddyfile already exists, skipping template copy."
+fi
 
 echo "==> Checking docker network 'web-proxy'..."
 if ! docker network inspect web-proxy >/dev/null 2>&1; then

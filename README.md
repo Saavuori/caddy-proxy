@@ -35,6 +35,12 @@ This will install Caddy proxy files into a `./caddy-proxy` directory and create 
 To finish deployment, configure the proxy settings:
 
 ### 1. Configure the Caddyfile
+If you installed via the curl script, `Caddyfile` is already created from the template. Otherwise, if you cloned this repository, copy the example template:
+
+```bash
+cp Caddyfile.example Caddyfile
+```
+
 Open `Caddyfile` and configure your settings:
 
 1. **Email Address**: Replace `your-email@example.com` with your email to receive Let's Encrypt certificate notifications.
