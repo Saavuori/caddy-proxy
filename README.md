@@ -2,11 +2,12 @@
 
 This repository contains a containerized reverse proxy setup using **Caddy** to route multiple web applications (running in Docker or host mode) on a Raspberry Pi using subpath-based routing under a single dynamic DNS (DDNS) domain.
 
+![Portal Preview](assets/portal_preview.png)
+
 Features:
 * **Automatic HTTPS**: Requests and automatically renews SSL/TLS certificates via Let's Encrypt / ZeroSSL.
 * **Basic Authentication**: Password protection globally enforced across all proxied services.
 * **Simplified Access**: Access all your services under a single domain (e.g., `https://your-domain.com/helendatacollector/`, `https://your-domain.com/ruuvigateway/`).
-* **Auto-Updates**: Uses **Watchtower** to keep Caddy automatically updated.
 
 ---
 
@@ -84,7 +85,7 @@ For containers running in host network mode (`network_mode: "host"`), they bind 
 
 ## Deployment
 
-1. Start the proxy and watchtower stack:
+1. Start the proxy stack:
    ```bash
    docker compose up -d
    ```
