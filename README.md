@@ -7,7 +7,7 @@ This repository contains a containerized reverse proxy setup using **Caddy** to 
 Features:
 * **Automatic HTTPS**: Requests and automatically renews SSL/TLS certificates via Let's Encrypt / ZeroSSL.
 * **Basic Authentication**: Password protection globally enforced across all proxied services.
-* **Simplified Access**: Access all your services under a single domain (e.g., `https://your-domain.com/helendatacollector/`, `https://your-domain.com/ruuvigateway/`).
+* **Simplified Access**: Access all your services under a single domain (e.g., `https://your-domain.com/helendatacollector/`, `https://your-domain.com/ruuvigateway/`, `https://your-domain.com/fingridflow/`).
 
 ---
 
@@ -16,6 +16,7 @@ Features:
 * **Caddy** runs in a Docker container connected to a shared bridge network `web-proxy` and exposes ports `80` (HTTP validation) and `443` (HTTPS).
 * **Helen Flow Data Collector** runs in bridge mode on the same `web-proxy` network and is accessed via Caddy routing (`helen-collector:3000`).
 * **RuuviGateway** runs in `host` mode (for BLE/Bluetooth functionality) and is accessed by Caddy routing to the host gateway (`host.docker.internal:8080`).
+* **FingridFlow Open Data Collector** runs in bridge mode on the same `web-proxy` network and is accessed via Caddy routing (`fingrid-collector:3000`).
 
 ---
 
@@ -57,7 +58,7 @@ Open `Caddyfile` and configure your settings:
 
 ## Connecting Your Services
 
-### Bridge Containers (e.g. Helen Flow)
+### Bridge Containers (e.g. Helen Flow, FingridFlow)
 For containers running in bridge mode on the same machine, modify their `docker-compose.yml` to connect to Caddy's network and declare it as external.
 
 Example `docker-compose.yml` block:
