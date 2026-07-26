@@ -25,19 +25,33 @@ your-ddns-domain.tplinkdns.com {
 
     # 1. Enforce trailing slashes for clean relative asset loading
     redir /helendatacollector /helendatacollector/
+    redir /eleniadatacollector /eleniadatacollector/
     redir /ruuvigateway /ruuvigateway/
-    redir /otherapp /otherapp/
+    redir /fingridflow /fingridflow/
 
     # 2. Reverse proxy handlers with prefix stripping
     handle_path /helendatacollector* {
         reverse_proxy helen-collector:3000
     }
 
+    handle_path /eleniadatacollector* {
+        reverse_proxy elenia-collector:3000
+    }
+
     handle_path /ruuvigateway* {
         reverse_proxy host.docker.internal:8080
     }
 
-    # Placeholder for the third app
+    handle_path /fingridflow* {
+        reverse_proxy fingrid-collector:3000
+    }
+
+    # Adding another app? Copy the two lines above: a `redir` to enforce the
+    # trailing slash, and a `handle_path` that strips the prefix before
+    # proxying. Bridge containers are addressed by container name on the
+    # web-proxy network; host-mode ones via host.docker.internal.
+    #
+    # redir /otherapp /otherapp/
     # handle_path /otherapp* {
     #     reverse_proxy other-container:port
     # }

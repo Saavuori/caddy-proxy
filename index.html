@@ -152,6 +152,9 @@
         .card.fingrid:hover {
             box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
         }
+        .card.elenia:hover {
+            box-shadow: 0 20px 40px rgba(132, 204, 22, 0.15);
+        }
         .card-icon {
             width: 3.5rem;
             height: 3.5rem;
@@ -173,6 +176,10 @@
         }
         .fingrid .card-icon {
             background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: #ffffff;
+        }
+        .elenia .card-icon {
+            background: linear-gradient(135deg, #84cc16, #4d7c0f);
             color: #ffffff;
         }
         .card-meta {
@@ -203,6 +210,11 @@
             background-color: rgba(6, 182, 212, 0.15);
             color: #67e8f9;
             border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+        .elenia .status-badge {
+            background-color: rgba(132, 204, 22, 0.15);
+            color: #bef264;
+            border: 1px solid rgba(132, 204, 22, 0.2);
         }
         /* Offline status badge state */
         .status-badge.offline {
@@ -285,6 +297,17 @@
             border-color: #06b6d4;
             box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
         }
+        .elenia .card-button {
+            background: rgba(132, 204, 22, 0.1);
+            color: #a3e635;
+            border: 1px solid rgba(132, 204, 22, 0.2);
+        }
+        .elenia .card-button:hover {
+            background: #84cc16;
+            color: #1a2e05;
+            border-color: #84cc16;
+            box-shadow: 0 4px 12px rgba(132, 204, 22, 0.3);
+        }
         footer {
             text-align: center;
             font-size: 0.875rem;
@@ -336,6 +359,24 @@
                     Retrieves, processes, and exports your electricity consumption data and spot price history from Helen.fi to local databases. Excellent for tracking hourly spot price impacts.
                 </p>
                 <a href="/helendatacollector/" class="card-button">
+                    Launch Service <span>&rarr;</span>
+                </a>
+            </div>
+            <div class="card elenia">
+                <div class="card-meta">
+                    <div class="card-icon">🔌</div>
+                    <span class="status-badge">
+                        <span class="status-dot"></span> Elenia Flow
+                    </span>
+                </div>
+                <div>
+                    <h2 class="card-title">EleniaFlow Collector</h2>
+                    <p style="font-size: 0.8rem; color: #a3e635; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grid Metering Monitor</p>
+                </div>
+                <p class="card-description">
+                    Reads your Elenia Aina metering points and exports consumption with Nord Pool spot prices to InfluxDB. Resolves down to 5-minute values straight from the meter registers, only minutes behind live.
+                </p>
+                <a href="/eleniadatacollector/" class="card-button">
                     Launch Service <span>&rarr;</span>
                 </a>
             </div>
@@ -402,6 +443,11 @@
                 path: '/helendatacollector/',
                 cardSelector: '.card.helen',
                 badgeSelector: '.card.helen .status-badge'
+            },
+            {
+                path: '/eleniadatacollector/',
+                cardSelector: '.card.elenia',
+                badgeSelector: '.card.elenia .status-badge'
             },
             {
                 path: '/ruuvigateway/',
