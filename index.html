@@ -141,19 +141,7 @@
         .card:hover {
             transform: translateY(-5px);
             border-color: rgba(255, 255, 255, 0.18);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-        }
-        .card.helen:hover {
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
-        }
-        .card.ruuvi:hover {
-            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.15);
-        }
-        .card.fingrid:hover {
-            box-shadow: 0 20px 40px rgba(6, 182, 212, 0.15);
-        }
-        .card.elenia:hover {
-            box-shadow: 0 20px 40px rgba(132, 204, 22, 0.15);
+            box-shadow: 0 20px 40px var(--accent-shadow, rgba(0, 0, 0, 0.4));
         }
         .card-icon {
             width: 3.5rem;
@@ -165,21 +153,7 @@
             font-size: 1.75rem;
             font-weight: bold;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        }
-        .helen .card-icon {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: #ffffff;
-        }
-        .ruuvi .card-icon {
-            background: linear-gradient(135deg, #10b981, #047857);
-            color: #ffffff;
-        }
-        .fingrid .card-icon {
-            background: linear-gradient(135deg, #06b6d4, #0891b2);
-            color: #ffffff;
-        }
-        .elenia .card-icon {
-            background: linear-gradient(135deg, #84cc16, #4d7c0f);
+            background: linear-gradient(135deg, var(--accent), var(--accent-deep));
             color: #ffffff;
         }
         .card-meta {
@@ -195,26 +169,9 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-        }
-        .helen .status-badge {
-            background-color: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
-        .ruuvi .status-badge {
-            background-color: rgba(16, 185, 129, 0.15);
-            color: #6ee7b7;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        .fingrid .status-badge {
-            background-color: rgba(6, 182, 212, 0.15);
-            color: #67e8f9;
-            border: 1px solid rgba(6, 182, 212, 0.2);
-        }
-        .elenia .status-badge {
-            background-color: rgba(132, 204, 22, 0.15);
-            color: #bef264;
-            border: 1px solid rgba(132, 204, 22, 0.2);
+            background-color: var(--accent-soft);
+            color: var(--accent-light);
+            border: 1px solid var(--accent-border);
         }
         /* Offline status badge state */
         .status-badge.offline {
@@ -244,6 +201,14 @@
             color: var(--text-primary);
             letter-spacing: -0.01em;
         }
+        .card-category {
+            font-size: 0.8rem;
+            color: var(--accent-mid);
+            margin-top: 0.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
         .card-description {
             font-size: 0.95rem;
             color: var(--text-secondary);
@@ -263,50 +228,24 @@
             border-radius: 0.75rem;
             transition: all 0.3s ease;
             width: 100%;
+            background: var(--accent-soft);
+            color: var(--accent-mid);
+            border: 1px solid var(--accent-border);
         }
-        .helen .card-button {
-            background: rgba(59, 130, 246, 0.1);
-            color: #60a5fa;
-            border: 1px solid rgba(59, 130, 246, 0.2);
+        .card-button:hover {
+            background: var(--accent);
+            color: var(--accent-contrast);
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px var(--accent-shadow);
         }
-        .helen .card-button:hover {
-            background: #3b82f6;
-            color: #ffffff;
-            border-color: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-        }
-        .ruuvi .card-button {
-            background: rgba(16, 185, 129, 0.1);
-            color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        .ruuvi .card-button:hover {
-            background: #10b981;
-            color: #ffffff;
-            border-color: #10b981;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-        .fingrid .card-button {
-            background: rgba(6, 182, 212, 0.1);
-            color: #22d3ee;
-            border: 1px solid rgba(6, 182, 212, 0.2);
-        }
-        .fingrid .card-button:hover {
-            background: #06b6d4;
-            color: #ffffff;
-            border-color: #06b6d4;
-            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-        }
-        .elenia .card-button {
-            background: rgba(132, 204, 22, 0.1);
-            color: #a3e635;
-            border: 1px solid rgba(132, 204, 22, 0.2);
-        }
-        .elenia .card-button:hover {
-            background: #84cc16;
-            color: #1a2e05;
-            border-color: #84cc16;
-            box-shadow: 0 4px 12px rgba(132, 204, 22, 0.3);
+        .portal-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: var(--text-secondary);
+            font-weight: 300;
+            padding: 3rem 1rem;
+            border: 1px dashed var(--card-border);
+            border-radius: 1.25rem;
         }
         footer {
             text-align: center;
@@ -343,79 +282,8 @@
             <h1>Smart Home Gateway</h1>
             <p class="subtitle">Access your self-hosted tools and home automation nodes from a secure, unified landing interface.</p>
         </header>
-        <div class="grid">
-            <div class="card helen">
-                <div class="card-meta">
-                    <div class="card-icon">⚡</div>
-                    <span class="status-badge">
-                        <span class="status-dot"></span> Helen Flow
-                    </span>
-                </div>
-                <div>
-                    <h2 class="card-title">Helen Flow Collector</h2>
-                    <p style="font-size: 0.8rem; color: #60a5fa; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Electricity Monitor</p>
-                </div>
-                <p class="card-description">
-                    Retrieves, processes, and exports your electricity consumption data and spot price history from Helen.fi to local databases. Excellent for tracking hourly spot price impacts.
-                </p>
-                <a href="/helendatacollector/" class="card-button">
-                    Launch Service <span>&rarr;</span>
-                </a>
-            </div>
-            <div class="card elenia">
-                <div class="card-meta">
-                    <div class="card-icon">🔌</div>
-                    <span class="status-badge">
-                        <span class="status-dot"></span> Elenia Flow
-                    </span>
-                </div>
-                <div>
-                    <h2 class="card-title">EleniaFlow Collector</h2>
-                    <p style="font-size: 0.8rem; color: #a3e635; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grid Metering Monitor</p>
-                </div>
-                <p class="card-description">
-                    Reads your Elenia Aina metering points and exports consumption with Nord Pool spot prices to InfluxDB. Resolves down to 5-minute values straight from the meter registers, only minutes behind live.
-                </p>
-                <a href="/eleniadatacollector/" class="card-button">
-                    Launch Service <span>&rarr;</span>
-                </a>
-            </div>
-            <div class="card ruuvi">
-                <div class="card-meta">
-                    <div class="card-icon">🏷️</div>
-                    <span class="status-badge">
-                        <span class="status-dot"></span> Ruuvi Gateway
-                    </span>
-                </div>
-                <div>
-                    <h2 class="card-title">Ruuvi Gateway</h2>
-                    <p style="font-size: 0.8rem; color: #34d399; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">BLE Tag Hub</p>
-                </div>
-                <p class="card-description">
-                    Receives, parses, and forwards Bluetooth BLE advertisements from RuuviTag environmental sensors. Monitor real-time temperature, humidity, and pressure across your property.
-                </p>
-                <a href="/ruuvigateway/" class="card-button">
-                    Launch Service <span>&rarr;</span>
-                </a>
-            </div>
-            <div class="card fingrid">
-                <div class="card-meta">
-                    <div class="card-icon">📊</div>
-                    <span class="status-badge">
-                        <span class="status-dot"></span> Fingrid Flow
-                    </span>
-                </div>
-                <div>
-                    <h2 class="card-title">FingridFlow</h2>
-                    <p style="font-size: 0.8rem; color: #22d3ee; margin-top: 0.25rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Grid Data Collector</p>
-                </div>
-                <p class="card-description">
-                    Retrieves, browses, and exports grid metrics from the Fingrid Open Data API (frequency, wind, solar, nuclear, etc.) to InfluxDB. Features interactive live-preview charts.
-                </p>
-                <a href="/fingridflow/" class="card-button">
-                    Launch Service <span>&rarr;</span>
-                </a>
-            </div>
+        <div class="grid" id="service-grid">
+            <p class="portal-message">Loading services&hellip;</p>
         </div>
         <footer>
             <div class="info-pill-container">
@@ -427,6 +295,23 @@
         </footer>
     </div>
     <script>
+        // ---------------------------------------------------------------
+        // Cards are rendered from services.json, which is mounted into the
+        // Caddy container next to this file. add-service.sh writes both the
+        // Caddyfile route and the services.json entry, so a new project shows
+        // up here on its own — no edits to this page, no container rebuild.
+        // ---------------------------------------------------------------
+        const SERVICES_URL = 'services.json';
+        const SERVICES_REFRESH_MS = 60000;
+        const STATUS_REFRESH_MS = 30000;
+
+        const gridEl = document.getElementById('service-grid');
+        const urlParams = new URLSearchParams(window.location.search);
+        const isMockMode = urlParams.has('mock');
+
+        let renderedSignature = null;
+        let cards = [];
+
         function updateTime() {
             const timeSpan = document.getElementById('local-time');
             if (timeSpan) {
@@ -437,49 +322,106 @@
         setInterval(updateTime, 1000);
         updateTime();
 
-        // Autodiscovery & Status Probing
-        const services = [
-            {
-                path: '/helendatacollector/',
-                cardSelector: '.card.helen',
-                badgeSelector: '.card.helen .status-badge'
-            },
-            {
-                path: '/eleniadatacollector/',
-                cardSelector: '.card.elenia',
-                badgeSelector: '.card.elenia .status-badge'
-            },
-            {
-                path: '/ruuvigateway/',
-                cardSelector: '.card.ruuvi',
-                badgeSelector: '.card.ruuvi .status-badge'
-            },
-            {
-                path: '/fingridflow/',
-                cardSelector: '.card.fingrid',
-                badgeSelector: '.card.fingrid .status-badge'
+        // --- Accent colour derivation -----------------------------------
+        // Every card gets its palette from a single `accent` hex in the JSON,
+        // so adding a service never means writing new CSS.
+        function parseHex(hex) {
+            const clean = String(hex || '').trim().replace('#', '');
+            const full = clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean;
+            if (!/^[0-9a-fA-F]{6}$/.test(full)) return [59, 130, 246]; // fall back to blue
+            return [0, 2, 4].map(i => parseInt(full.slice(i, i + 2), 16));
+        }
+        function mix(rgb, target, amount) {
+            return rgb.map((c, i) => Math.round(c + (target[i] - c) * amount));
+        }
+        function css(rgb, alpha) {
+            return alpha === undefined
+                ? 'rgb(' + rgb.join(', ') + ')'
+                : 'rgba(' + rgb.join(', ') + ', ' + alpha + ')';
+        }
+        function isLight(rgb) {
+            return (0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]) / 255 > 0.55;
+        }
+        function applyAccent(el, accent) {
+            const rgb = parseHex(accent);
+            el.style.setProperty('--accent', css(rgb));
+            el.style.setProperty('--accent-deep', css(mix(rgb, [0, 0, 0], 0.4)));
+            el.style.setProperty('--accent-light', css(mix(rgb, [255, 255, 255], 0.45)));
+            el.style.setProperty('--accent-mid', css(mix(rgb, [255, 255, 255], 0.25)));
+            el.style.setProperty('--accent-soft', css(rgb, 0.12));
+            el.style.setProperty('--accent-border', css(rgb, 0.2));
+            el.style.setProperty('--accent-shadow', css(rgb, 0.15));
+            el.style.setProperty('--accent-contrast', isLight(rgb) ? css(mix(rgb, [0, 0, 0], 0.85)) : '#ffffff');
+        }
+
+        // --- Rendering ---------------------------------------------------
+        function el(tag, className, text) {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text !== undefined) node.textContent = text;
+            return node;
+        }
+
+        function buildCard(service) {
+            const card = el('div', 'card');
+            applyAccent(card, service.accent);
+
+            const meta = el('div', 'card-meta');
+            meta.appendChild(el('div', 'card-icon', service.icon || '🧩'));
+
+            const badge = el('span', 'status-badge');
+            badge.appendChild(el('span', 'status-dot'));
+            const badgeLabel = el('span', 'status-label', service.badge || service.name);
+            badge.appendChild(badgeLabel);
+            meta.appendChild(badge);
+            card.appendChild(meta);
+
+            const heading = el('div');
+            heading.appendChild(el('h2', 'card-title', service.name));
+            if (service.category) heading.appendChild(el('p', 'card-category', service.category));
+            card.appendChild(heading);
+
+            card.appendChild(el('p', 'card-description', service.description || ''));
+
+            const button = el('a', 'card-button');
+            button.href = service.path;
+            button.appendChild(document.createTextNode('Launch Service '));
+            button.appendChild(el('span', null, '→'));
+            card.appendChild(button);
+
+            return { service: service, card: card, badge: badge, label: badgeLabel };
+        }
+
+        function render(services) {
+            gridEl.textContent = '';
+            cards = services.map(buildCard);
+            cards.forEach(entry => gridEl.appendChild(entry.card));
+            if (!cards.length) {
+                gridEl.appendChild(el('p', 'portal-message', 'No services configured yet. Add one with ./add-service.sh'));
             }
-        ];
+        }
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const isMockMode = urlParams.has('mock');
+        function showMessage(text) {
+            gridEl.textContent = '';
+            gridEl.appendChild(el('p', 'portal-message', text));
+        }
 
-        async function probeService(service) {
-            const cardEl = document.querySelector(service.cardSelector);
-            const badgeEl = document.querySelector(service.badgeSelector);
-            if (!cardEl) return;
+        // --- Status probing ----------------------------------------------
+        function updateStatusBadge(entry, isOnline) {
+            entry.badge.classList.toggle('offline', !isOnline);
+            const label = entry.service.badge || entry.service.name;
+            entry.label.textContent = ' ' + label + (isOnline ? '' : ' (Offline)');
+        }
 
+        async function probeService(entry) {
             try {
                 let statusVal = 200;
                 if (isMockMode) {
-                    if (service.path.includes('/helendatacollector/')) {
-                        statusVal = 502; // Simulate offline for Helen
-                    } else {
-                        statusVal = 200; // Simulate online for Ruuvi and Fingrid
-                    }
+                    // Preview mode: pretend the first service is down so both
+                    // badge states are visible in screenshots.
+                    statusVal = cards.indexOf(entry) === 0 ? 502 : 200;
                 } else {
-                    // Fetch path GET with cache buster
-                    const response = await fetch(service.path + '?t=' + Date.now(), {
+                    const response = await fetch(entry.service.path + '?t=' + Date.now(), {
                         method: 'GET',
                         cache: 'no-store'
                     });
@@ -487,54 +429,53 @@
                 }
 
                 if (statusVal === 404) {
-                    // Not configured in Caddy -> Hide option
-                    cardEl.style.display = 'none';
+                    // Listed in services.json but no route in the Caddyfile -> hide it
+                    entry.card.style.display = 'none';
                 } else if (statusVal >= 500) {
-                    // Configured but backend container is down (Bad Gateway / Service Unavailable)
-                    cardEl.style.display = '';
-                    updateStatusBadge(badgeEl, false);
+                    // Route exists but the backend container is down
+                    entry.card.style.display = '';
+                    updateStatusBadge(entry, false);
                 } else {
-                    // Connected successfully (2xx, 3xx, or 401 Basic Auth required)
-                    cardEl.style.display = '';
-                    updateStatusBadge(badgeEl, true);
+                    // 2xx, 3xx, or 401 (basic auth challenge) all mean "reachable"
+                    entry.card.style.display = '';
+                    updateStatusBadge(entry, true);
                 }
             } catch (error) {
-                // If there's a network error (e.g. DNS or connection issue), mark as offline
-                cardEl.style.display = '';
-                updateStatusBadge(badgeEl, false);
+                entry.card.style.display = '';
+                updateStatusBadge(entry, false);
             }
         }
 
-        function updateStatusBadge(badgeEl, isOnline) {
-            if (!badgeEl) return;
-
-            if (isOnline) {
-                badgeEl.classList.remove('offline');
-            } else {
-                badgeEl.classList.add('offline');
-            }
-
-            // Extract or cache the original label
-            let label = badgeEl.getAttribute('data-label');
-            if (!label) {
-                const textNode = Array.from(badgeEl.childNodes).find(
-                    node => node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== ''
-                );
-                label = textNode ? textNode.textContent.trim() : '';
-                badgeEl.setAttribute('data-label', label);
-            }
-
-            // Update text node content
-            const textNode = Array.from(badgeEl.childNodes).find(
-                node => node.nodeType === Node.TEXT_NODE
-            );
-            if (textNode) {
-                textNode.textContent = ' ' + label + (isOnline ? '' : ' (Offline)');
-            }
+        function probeAll() {
+            cards.forEach(probeService);
         }
 
-        // Initialize autodiscovery checks
-        services.forEach(probeService);
+        // --- Autodiscovery loop -------------------------------------------
+        async function loadServices() {
+            let payload;
+            try {
+                const response = await fetch(SERVICES_URL + '?t=' + Date.now(), { cache: 'no-store' });
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                payload = await response.json();
+            } catch (error) {
+                if (!renderedSignature) {
+                    showMessage('Could not load services.json — check that it is mounted into the Caddy container.');
+                }
+                return;
+            }
+
+            const services = Array.isArray(payload) ? payload : (payload.services || []);
+            const signature = JSON.stringify(services);
+            if (signature === renderedSignature) return; // nothing changed
+
+            renderedSignature = signature;
+            render(services);
+            probeAll();
+        }
+
+        loadServices();
+        setInterval(loadServices, SERVICES_REFRESH_MS);
+        setInterval(probeAll, STATUS_REFRESH_MS);
     </script>
 </body>
 </html>

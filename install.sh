@@ -19,11 +19,26 @@ curl -fsSL "${BASE_URL}/Caddyfile.example" -o Caddyfile.example
 echo "==> Downloading index.html portal page..."
 curl -fsSL "${BASE_URL}/index.html" -o index.html
 
+echo "==> Downloading services.json template..."
+curl -fsSL "${BASE_URL}/services.json" -o services.json.example
+
+echo "==> Downloading add-service.sh helper..."
+curl -fsSL "${BASE_URL}/add-service.sh" -o add-service.sh
+chmod +x add-service.sh
+
 if [ ! -f Caddyfile ]; then
   echo "==> Creating Caddyfile from template..."
   cp Caddyfile.example Caddyfile
 else
   echo "==> Caddyfile already exists, skipping template copy."
+fi
+
+# services.json is your service list, so it is never overwritten on re-install.
+if [ ! -f services.json ]; then
+  echo "==> Creating services.json from template..."
+  cp services.json.example services.json
+else
+  echo "==> services.json already exists, skipping template copy."
 fi
 
 echo "==> Checking docker network 'web-proxy'..."
@@ -42,3 +57,5 @@ echo "  2. Edit Caddyfile to add your domain, email, and password hash:"
 echo "     nano Caddyfile"
 echo "  3. Start the proxy: "
 echo "     docker compose up -d"
+echo "  4. Add a service later (route + portal card, no restart needed):"
+echo "     ./add-service.sh --path myapp --upstream my-app:3000 --name \"My App\""

@@ -23,40 +23,38 @@ your-ddns-domain.tplinkdns.com {
 
     import basic-auth-auth
 
-    # 1. Enforce trailing slashes for clean relative asset loading
-    redir /helendatacollector /helendatacollector/
-    redir /eleniadatacollector /eleniadatacollector/
-    redir /ruuvigateway /ruuvigateway/
-    redir /fingridflow /fingridflow/
+    # Service routes. Each entry is a `redir` that enforces the trailing slash
+    # (so relative assets resolve) plus a `handle_path` that strips the prefix
+    # before proxying. Bridge containers are addressed by container name on the
+    # web-proxy network; host-mode ones via host.docker.internal.
+    #
+    # ./add-service.sh appends new routes right before the end marker, so keep
+    # both marker lines in place. Hand-editing between them is fine too — Caddy
+    # runs with --watch and reloads the file on its own.
 
-    # 2. Reverse proxy handlers with prefix stripping
+    # >>> caddy-proxy:routes (managed by add-service.sh — keep this marker)
+    redir /helendatacollector /helendatacollector/
     handle_path /helendatacollector* {
         reverse_proxy helen-collector:3000
     }
 
+    redir /eleniadatacollector /eleniadatacollector/
     handle_path /eleniadatacollector* {
         reverse_proxy elenia-collector:3000
     }
 
+    redir /ruuvigateway /ruuvigateway/
     handle_path /ruuvigateway* {
         reverse_proxy host.docker.internal:8080
     }
 
+    redir /fingridflow /fingridflow/
     handle_path /fingridflow* {
         reverse_proxy fingrid-collector:3000
     }
+    # <<< caddy-proxy:routes (end of managed routes)
 
-    # Adding another app? Copy the two lines above: a `redir` to enforce the
-    # trailing slash, and a `handle_path` that strips the prefix before
-    # proxying. Bridge containers are addressed by container name on the
-    # web-proxy network; host-mode ones via host.docker.internal.
-    #
-    # redir /otherapp /otherapp/
-    # handle_path /otherapp* {
-    #     reverse_proxy other-container:port
-    # }
-
-    # 3. Fallback Root page
+    # Fallback root page: the portal, plus the services.json it renders from.
     handle {
         root * /srv
         file_server

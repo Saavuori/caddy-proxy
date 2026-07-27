@@ -1,0 +1,40 @@
+{
+  "services": [
+    {
+      "name": "Helen Flow Collector",
+      "badge": "Helen Flow",
+      "category": "Electricity Monitor",
+      "icon": "⚡",
+      "accent": "#3b82f6",
+      "path": "/helendatacollector/",
+      "description": "Retrieves, processes, and exports your electricity consumption data and spot price history from Helen.fi to local databases. Excellent for tracking hourly spot price impacts."
+    },
+    {
+      "name": "EleniaFlow Collector",
+      "badge": "Elenia Flow",
+      "category": "Grid Metering Monitor",
+      "icon": "🔌",
+      "accent": "#84cc16",
+      "path": "/eleniadatacollector/",
+      "description": "Reads your Elenia Aina metering points and exports consumption with Nord Pool spot prices to InfluxDB. Resolves down to 5-minute values straight from the meter registers, only minutes behind live."
+    },
+    {
+      "name": "Ruuvi Gateway",
+      "badge": "Ruuvi Gateway",
+      "category": "BLE Tag Hub",
+      "icon": "🏷️",
+      "accent": "#10b981",
+      "path": "/ruuvigateway/",
+      "description": "Receives, parses, and forwards Bluetooth BLE advertisements from RuuviTag environmental sensors. Monitor real-time temperature, humidity, and pressure across your property."
+    },
+    {
+      "name": "FingridFlow",
+      "badge": "Fingrid Flow",
+      "category": "Grid Data Collector",
+      "icon": "📊",
+      "accent": "#06b6d4",
+      "path": "/fingridflow/",
+      "description": "Retrieves, browses, and exports grid metrics from the Fingrid Open Data API (frequency, wind, solar, nuclear, etc.) to InfluxDB. Features interactive live-preview charts."
+    }
+  ]
+}

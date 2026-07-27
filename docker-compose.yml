@@ -3,6 +3,11 @@ services:
     image: caddy:2-alpine
     container_name: caddy-proxy
     restart: unless-stopped
+    # --watch makes Caddy poll the Caddyfile and hot-reload it in place, so a
+    # new route goes live within a second or two of being saved — no restart,
+    # no dropped connections. A broken Caddyfile is logged and ignored; the
+    # last good config keeps serving.
+    command: caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch
     ports:
       - "80:80"
       - "443:443"
@@ -10,6 +15,7 @@ services:
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./index.html:/srv/index.html:ro
+      - ./services.json:/srv/services.json:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:
