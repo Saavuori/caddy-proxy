@@ -7,11 +7,6 @@ version: 2
 #
 # Every entry carries a 3-day cooldown: a version that gets yanked shortly
 # after publishing never reaches a PR.
-#
-# No `github-actions` entry: this repo has no workflows, and a github-actions
-# entry pointed at a repo without them is not inert — Dependabot aborts the job
-# with "/action.yml or /.github/workflows/<anything>.yml not found" and reports a
-# failed run every week. Add the entry at the same time as the first workflow.
 
 updates:
   # ---- compose service images ----
@@ -29,4 +24,24 @@ updates:
       default-days: 3
     groups:
       compose-minor-patch:
+        update-types: [minor, patch]
+
+  # ---- GitHub Actions ----
+  # Added with the first workflows (ci.yml and dependabot-automerge.yml). Before
+  # they existed this entry would have failed the Dependabot job every week with
+  # "/action.yml or /.github/workflows/<anything>.yml not found".
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Europe/Helsinki
+    commit-message:
+      prefix: chore
+      include: scope
+    labels: [dependencies, ci]
+    cooldown:
+      default-days: 3
+    groups:
+      actions-minor-patch:
         update-types: [minor, patch]
