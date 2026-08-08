@@ -1,0 +1,66 @@
+name: CI
+
+# This repo is a compose file and a Caddyfile, so there is nothing to compile.
+# What can break is the caddy image bump: a new major can rename or remove a
+# directive and the config stops adapting. That is the whole point of this
+# workflow — auto-merge needs something to wait for.
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual trigger
+
+# One run per branch; a new push supersedes an in-flight run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  caddy:
+    name: caddy adapt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # The tag is read out of docker-compose.yml rather than hardcoded, so the
+      # version Dependabot just bumped is the version that gets tested.
+      - name: Resolve the caddy image from docker-compose.yml
+        id: img
+        run: |
+          image=$(grep -m1 -oE 'image:[[:space:]]*caddy:[^[:space:]]+' docker-compose.yml | awk '{print $2}')
+          if [ -z "$image" ]; then
+            echo "::error file=docker-compose.yml::no caddy image found"
+            exit 1
+          fi
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "Testing against $image"
+
+      # `adapt` parses the Caddyfile and converts it to JSON. That is the check
+      # that catches a removed or renamed directive. Full `validate` is not used
+      # because Caddyfile.example ships placeholder credentials that would fail
+      # provisioning for reasons unrelated to the upgrade.
+      - name: Adapt Caddyfile.example
+        run: |
+          docker run --rm \
+            -v "$PWD/Caddyfile.example:/etc/caddy/Caddyfile:ro" \
+            "${{ steps.img.outputs.image }}" \
+            caddy adapt --config /etc/caddy/Caddyfile --adapter caddyfile > /dev/null
+
+  compose:
+    name: compose config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # Catches a compose file that stops parsing, and resolves the interpolation
+      # so a malformed service definition fails here rather than on the host.
+      - name: Validate docker-compose.yml
+        run: docker compose -f docker-compose.yml config > /dev/null
+
+      - name: Validate services.json
+        run: python3 -c "import json; json.load(open('services.json'))"
