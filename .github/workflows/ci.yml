@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       # The tag is read out of docker-compose.yml rather than hardcoded, so the
       # version Dependabot just bumped is the version that gets tested.
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
 
       # Catches a compose file that stops parsing, and resolves the interpolation
       # so a malformed service definition fails here rather than on the host.
