@@ -158,7 +158,10 @@ restore_caddyfile() {
     echo "==> Reverted $CADDYFILE"
 }
 
-# Validate before letting --watch pick the change up.
+# The new file is already in place at this point, because the running
+# container can only validate the Caddyfile it has mounted. If --watch polls
+# in between, it logs the broken config and keeps serving the last good one;
+# the revert below then puts the old file back.
 caddy_running() {
     docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'caddy-proxy'
 }
@@ -167,9 +170,15 @@ validate_caddyfile() {
     if caddy_running; then
         docker exec -i caddy-proxy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
     else
-        local abs
-        abs="$(cd "$(dirname "$CADDYFILE")" && pwd)/$(basename "$CADDYFILE")"
-        docker run --rm -v "${abs}:/etc/caddy/Caddyfile:ro" caddy:2-alpine \
+        local dir abs image=""
+        dir="$(cd "$(dirname "$CADDYFILE")" && pwd)"
+        abs="${dir}/$(basename "$CADDYFILE")"
+        # Check with the image the proxy itself runs, so a tag pinned or
+        # bumped in docker-compose.yml is the version that validates.
+        if [ -f "${dir}/docker-compose.yml" ]; then
+            image=$(sed -nE '/^[[:space:]]*image:[[:space:]]*caddy:/{s/^[[:space:]]*image:[[:space:]]*([^[:space:]]+).*/\1/p;q;}' "${dir}/docker-compose.yml")
+        fi
+        docker run --rm -v "${abs}:/etc/caddy/Caddyfile:ro" "${image:-caddy:2-alpine}" \
             caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
     fi
 }
