@@ -52,6 +52,12 @@ ADD_PORTAL=1
 DRY_RUN=0
 
 while [ $# -gt 0 ]; do
+    # Without this, a value-taking flag left dangling at the end of the line
+    # makes `shift 2` fail and `set -e` end the script without a word.
+    case "$1" in
+        --path|--upstream|--name|--description|--category|--badge|--icon|--accent)
+            [ $# -ge 2 ] || { usage >&2; die "$1 needs a value"; } ;;
+    esac
     case "$1" in
         --path)        PATH_SEGMENT="${2:-}"; shift 2 ;;
         --upstream)    UPSTREAM="${2:-}"; shift 2 ;;
