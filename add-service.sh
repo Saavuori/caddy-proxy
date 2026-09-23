@@ -87,11 +87,13 @@ esac
 
 [ -f "$CADDYFILE" ] || die "$CADDYFILE not found. Run this from your caddy-proxy directory, or set CADDYFILE=/path/to/Caddyfile."
 
-if grep -q "handle_path /${PATH_SEGMENT}\*" "$CADDYFILE"; then
+# Fixed strings, so a '.' in the segment is not a regex wildcard. The second
+# form is the older `/seg*` matcher that existing Caddyfiles still carry.
+if grep -qF -e "handle_path /${PATH_SEGMENT}/*" -e "handle_path /${PATH_SEGMENT}*" "$CADDYFILE"; then
     die "/${PATH_SEGMENT} is already routed in $CADDYFILE. Remove it first, or pick another --path."
 fi
 
-ROUTE_BLOCK=$(printf '\n    redir /%s /%s/\n    handle_path /%s* {\n        reverse_proxy %s\n    }\n' \
+ROUTE_BLOCK=$(printf '\n    redir /%s /%s/\n    handle_path /%s/* {\n        reverse_proxy %s\n    }\n' \
     "$PATH_SEGMENT" "$PATH_SEGMENT" "$PATH_SEGMENT" "$UPSTREAM")
 
 # Prefer the managed-routes end marker; fall back to the last `handle {` block
