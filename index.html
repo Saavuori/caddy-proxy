@@ -14,9 +14,6 @@
             --card-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
-            --accent-primary: #3b82f6;
-            --accent-secondary: #10b981;
-            --accent-glow: rgba(59, 130, 246, 0.15);
         }
         * {
             box-sizing: border-box;
@@ -362,6 +359,10 @@
             return node;
         }
 
+        function badgeText(service) {
+            return service.badge || service.name;
+        }
+
         function buildCard(service) {
             const card = el('div', 'card');
             applyAccent(card, service.accent);
@@ -371,7 +372,7 @@
 
             const badge = el('span', 'status-badge');
             badge.appendChild(el('span', 'status-dot'));
-            const badgeLabel = el('span', 'status-label', service.badge || service.name);
+            const badgeLabel = el('span', 'status-label', badgeText(service));
             badge.appendChild(badgeLabel);
             meta.appendChild(badge);
             card.appendChild(meta);
@@ -409,8 +410,7 @@
         // --- Status probing ----------------------------------------------
         function updateStatusBadge(entry, isOnline) {
             entry.badge.classList.toggle('offline', !isOnline);
-            const label = entry.service.badge || entry.service.name;
-            entry.label.textContent = ' ' + label + (isOnline ? '' : ' (Offline)');
+            entry.label.textContent = badgeText(entry.service) + (isOnline ? '' : ' (Offline)');
         }
 
         async function probeService(entry) {
