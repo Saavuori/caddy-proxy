@@ -64,3 +64,16 @@ jobs:
 
       - name: Validate services.json
         run: python3 -c "import json; json.load(open('services.json'))"
+
+  shellcheck:
+    name: shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      # install.sh is piped straight into bash on the host and add-service.sh
+      # rewrites the live Caddyfile, so both get linted. shellcheck ships with
+      # the ubuntu runner image.
+      - name: Lint shell scripts
+        run: shellcheck install.sh add-service.sh

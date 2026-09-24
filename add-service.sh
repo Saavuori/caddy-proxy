@@ -52,6 +52,12 @@ ADD_PORTAL=1
 DRY_RUN=0
 
 while [ $# -gt 0 ]; do
+    # Without this, a value-taking flag left dangling at the end of the line
+    # makes `shift 2` fail and `set -e` end the script without a word.
+    case "$1" in
+        --path|--upstream|--name|--description|--category|--badge|--icon|--accent)
+            [ $# -ge 2 ] || { usage >&2; die "$1 needs a value"; } ;;
+    esac
     case "$1" in
         --path)        PATH_SEGMENT="${2:-}"; shift 2 ;;
         --upstream)    UPSTREAM="${2:-}"; shift 2 ;;
@@ -87,11 +93,13 @@ esac
 
 [ -f "$CADDYFILE" ] || die "$CADDYFILE not found. Run this from your caddy-proxy directory, or set CADDYFILE=/path/to/Caddyfile."
 
-if grep -q "handle_path /${PATH_SEGMENT}\*" "$CADDYFILE"; then
+# Fixed strings, so a '.' in the segment is not a regex wildcard. The second
+# form is the older `/seg*` matcher that existing Caddyfiles still carry.
+if grep -qF -e "handle_path /${PATH_SEGMENT}/*" -e "handle_path /${PATH_SEGMENT}*" "$CADDYFILE"; then
     die "/${PATH_SEGMENT} is already routed in $CADDYFILE. Remove it first, or pick another --path."
 fi
 
-ROUTE_BLOCK=$(printf '\n    redir /%s /%s/\n    handle_path /%s* {\n        reverse_proxy %s\n    }\n' \
+ROUTE_BLOCK=$(printf '\n    redir /%s /%s/\n    handle_path /%s/* {\n        reverse_proxy %s\n    }\n' \
     "$PATH_SEGMENT" "$PATH_SEGMENT" "$PATH_SEGMENT" "$UPSTREAM")
 
 # Prefer the managed-routes end marker; fall back to the last `handle {` block
@@ -150,7 +158,10 @@ restore_caddyfile() {
     echo "==> Reverted $CADDYFILE"
 }
 
-# Validate before letting --watch pick the change up.
+# The new file is already in place at this point, because the running
+# container can only validate the Caddyfile it has mounted. If --watch polls
+# in between, it logs the broken config and keeps serving the last good one;
+# the revert below then puts the old file back.
 caddy_running() {
     docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'caddy-proxy'
 }
@@ -159,9 +170,15 @@ validate_caddyfile() {
     if caddy_running; then
         docker exec -i caddy-proxy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
     else
-        local abs
-        abs="$(cd "$(dirname "$CADDYFILE")" && pwd)/$(basename "$CADDYFILE")"
-        docker run --rm -v "${abs}:/etc/caddy/Caddyfile:ro" caddy:2-alpine \
+        local dir abs image=""
+        dir="$(cd "$(dirname "$CADDYFILE")" && pwd)"
+        abs="${dir}/$(basename "$CADDYFILE")"
+        # Check with the image the proxy itself runs, so a tag pinned or
+        # bumped in docker-compose.yml is the version that validates.
+        if [ -f "${dir}/docker-compose.yml" ]; then
+            image=$(sed -nE '/^[[:space:]]*image:[[:space:]]*caddy:/{s/^[[:space:]]*image:[[:space:]]*([^[:space:]]+).*/\1/p;q;}' "${dir}/docker-compose.yml")
+        fi
+        docker run --rm -v "${abs}:/etc/caddy/Caddyfile:ro" "${image:-caddy:2-alpine}" \
             caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
     fi
 }
